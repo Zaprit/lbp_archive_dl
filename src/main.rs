@@ -128,7 +128,7 @@ async fn dl_as_backup(level_id: i64, config: Config) {
 
     make_icon(&bkp_path, Path::new(&level_id.to_string()));
 
-    println!("{{\"dl_count\":\"{dl_count}\",\"fail_count\":\"{fail_count}\",\"output\":\"{bkp_name}\"}}");
+    println!("{{\"dl_count\":{dl_count},\"fail_count\":{fail_count},\"output\":\"{bkp_name}\"}}");
 }
 
 #[tokio::main]
