@@ -126,7 +126,10 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     };
     make_pfd(pfd_version, sfo, &bkp_path);
 
-    make_icon(&bkp_path, Path::new(&level_id.to_string()));
+    let mut name = level_id.to_string().to_owned();
+    name.push_str(".png");
+
+    make_icon(&bkp_path, Path::new(&name));
 
     println!("{{\"dl_count\":{dl_count},\"fail_count\":{fail_count},\"output\":\"{bkp_name}\"}}");
 }
