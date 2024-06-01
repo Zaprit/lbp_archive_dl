@@ -48,7 +48,7 @@ fn make_icon(bkp_path: &Path, id: &Path) {
         Ok(mut f) => {
             io::copy(&mut f, &mut icon_file).expect("Failed to copy icon file");
         }
-        Err(()) => {
+        Err(_) => {
             icon_file.write_all(include_bytes!("assets/placeholder_icon.png")).unwrap();
         }
     }
