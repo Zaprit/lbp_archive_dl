@@ -1,4 +1,5 @@
-use std::{collections::BTreeMap, fs::{self, File}, io::{stdout, Write}, path::Path};
+use std::{collections::BTreeMap, fs::{self, File}, io::{stdout, Write}, io, path::Path};
+use std::io::Read;
 use clap::{Parser, Subcommand};
 use config::Config;
 use reqwest::ClientBuilder;
@@ -41,18 +42,21 @@ enum Commands {
     }
 }
 
-fn make_icon(bkp_path: &Path) {
+fn make_icon(bkp_path: &Path, id: &Path) {
     let mut icon_file = File::create(bkp_path.join("ICON0.PNG")).unwrap();
-    icon_file.write_all(include_bytes!("assets/placeholder_icon.png")).unwrap();
+    match File::open(Path::new("/home/henry/icons/").join(id)) {
+        Ok(mut f) => {
+            io::copy(&mut f, &mut icon_file).expect("Failed to copy icon file");
+        }
+        Err(()) => {
+            icon_file.write_all(include_bytes!("assets/placeholder_icon.png")).unwrap();
+        }
+    }
+
 }
 
 async fn dl_as_backup(level_id: i64, config: Config) {
     let slot_info = get_slot_info(level_id, &config.database_path);
-
-    println!("Level found!");
-    println!("Name: {}", &slot_info.name);
-    println!("Creator: {}", &slot_info.np_handle);
-    println!("Game: {}", slot_info.game.get_short_title());
 
     let mut client = ClientBuilder::new()
         .user_agent(USER_AGENT)
@@ -64,7 +68,6 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     // so we store all hashes in a BTreeSet to have them automatically sorted
     let mut hashes = BTreeMap::new();
 
-    print!("Downloading resources");
     stdout().flush().unwrap();
 
     let mut dl_count = 0;
@@ -77,9 +80,6 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     if let None = hashes.get(&slot_info.root_level).unwrap() {
         panic!("rootLevel is missing from the archive, rip");
     }
-
-    println!("Done!");
-    println!("{dl_count} resources downloaded, {fail_count} failed");
 
     let root_resrc = hashes.get(&slot_info.root_level).unwrap().as_deref().unwrap();
     let root_resrc = ResrcId::new(root_resrc);
@@ -127,9 +127,9 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     };
     make_pfd(pfd_version, sfo, &bkp_path);
 
-    make_icon(&bkp_path);
+    make_icon(&bkp_path, Path::new(&level_id.to_string()));
 
-    println!("Backup written to {bkp_name}");
+    println!("{{\"dl_count\":\"{dl_count}\",\"fail_count\":\"{fail_count}\",\"output\":\"{bkp_name}\"}}");
 }
 
 #[tokio::main]
