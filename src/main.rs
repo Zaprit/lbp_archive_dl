@@ -1,5 +1,4 @@
 use std::{collections::BTreeMap, fs::{self, File}, io::{stdout, Write}, io, path::Path};
-use std::io::Read;
 use clap::{Parser, Subcommand};
 use config::Config;
 use reqwest::ClientBuilder;

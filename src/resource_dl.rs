@@ -52,7 +52,6 @@ async fn download_res(
     let mut resp = client.get(url).send().await.unwrap();
 
     if resp.status() != 200 {
-        print!("!");
         stdout().flush().unwrap();
         *fail_count += 1;
         return None;
@@ -69,7 +68,6 @@ async fn download_res(
 
     assert!(Sha1::digest(&resource).as_slice() == sha1);
 
-    print!(".");
     stdout().flush().unwrap();
     *dl_count += 1;
 
