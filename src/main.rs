@@ -131,7 +131,7 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     make_pfd(pfd_version, sfo, &bkp_path);
 
     eprintln!("Backup written to {bkp_name}");
-    println!("{bkp_name}");
+    print!("{bkp_name}");
 }
 
 #[tokio::main]
