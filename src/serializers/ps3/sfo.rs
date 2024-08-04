@@ -54,8 +54,8 @@ const ENTRIES_LEN: usize = 10;
 
 pub fn make_sfo(slot_info: &SlotInfo, bkp_name: &str, dir: &Path, gamever: &GameVersion) -> Vec<u8> {
     let title = match slot_info.is_adventure_planet {
-        false => format!("{} Dry Archive Level Backup", gamever.get_title()),
-        true => format!("{} Dry Archive Adventure Backup", gamever.get_title()),
+        false => format!("{} Level Backup from zaprit.fish", gamever.get_title()),
+        true => format!("{} Archive Adventure Backup from zaprit.fish", gamever.get_title()),
     };
     let subtitle = format!("{} by {}", slot_info.name, slot_info.np_handle);
 
