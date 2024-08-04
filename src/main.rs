@@ -47,10 +47,10 @@ enum Commands {
 async fn dl_as_backup(level_id: i64, config: Config) {
     let slot_info = get_slot_info(level_id, &config.database_path);
 
-    println!("Level found!");
-    println!("Name: {}", &slot_info.name);
-    println!("Creator: {}", &slot_info.np_handle);
-    println!("Game: {}", slot_info.game.get_short_title());
+    eprintln!("Level found!");
+    eprintln!("Name: {}", &slot_info.name);
+    eprintln!("Creator: {}", &slot_info.np_handle);
+    eprintln!("Game: {}", slot_info.game.get_short_title());
 
     let mut client = ClientBuilder::new()
         .user_agent(USER_AGENT)
@@ -62,7 +62,7 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     // so we store all hashes in a BTreeSet to have them automatically sorted
     let mut hashes = BTreeMap::new();
 
-    print!("Downloading resources");
+    eprint!("Downloading resources");
     stdout().flush().unwrap();
 
     let mut icon_sha1 = None;
@@ -79,8 +79,8 @@ async fn dl_as_backup(level_id: i64, config: Config) {
         panic!("rootLevel is missing from the archive, rip");
     }
 
-    println!("Done!");
-    println!("{dl_count} resources downloaded, {fail_count} failed");
+    eprintln!("Done!");
+    eprintln!("{dl_count} resources downloaded, {fail_count} failed");
 
     let root_resrc = hashes.get(&slot_info.root_level).unwrap().as_deref().unwrap();
     let root_resrc = ResrcId::new(root_resrc, false);
@@ -93,17 +93,17 @@ async fn dl_as_backup(level_id: i64, config: Config) {
 
     let mut gameversion = revision.get_gameversion();
     if slot_info.game != gameversion {
-        println!(
+        eprintln!(
             "WARNING: This is a {} level in {} format",
             slot_info.game.get_short_title(),
             gameversion.get_short_title(),
         );
         if config.fix_backup_version {
-            println!("WARNING: Writing {} backup", gameversion.get_short_title());
+            eprintln!("WARNING: Writing {} backup", gameversion.get_short_title());
         } else {
             gameversion = slot_info.game;
             revision = gameversion.get_latest_revision();
-            println!("WARNING: Writing {} backup anyways, you should backport this level!", gameversion.get_short_title());
+            eprintln!("WARNING: Writing {} backup anyways, you should backport this level!", gameversion.get_short_title());
         }
     }
 
@@ -130,7 +130,8 @@ async fn dl_as_backup(level_id: i64, config: Config) {
     };
     make_pfd(pfd_version, sfo, &bkp_path);
 
-    println!("Backup written to {bkp_name}");
+    eprintln!("Backup written to {bkp_name}");
+    println!("{bkp_name}");
 }
 
 #[tokio::main]
