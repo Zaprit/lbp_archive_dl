@@ -6,6 +6,7 @@ use serde::Deserialize;
 #[serde(rename_all = "camelCase")]
 pub enum DownloadServer {
     Refresh,
+    LBPSearch,
     Archive,
 }
 
@@ -14,6 +15,7 @@ impl DownloadServer {
         let h = hex::encode(sha1);
         match self {
             Self::Refresh => format!("https://lbp.littlebigrefresh.com/api/v3/assets/{}/download", h),
+            Self::LBPSearch => format!("https://lbparchive.zaprit.fish/{}/{}/{}", &h[..2], &h[2..4], h),
             Self::Archive => format!("https://archive.org/download/dry23r{}/dry{}.zip/{}%2F{}%2F{}", h.chars().next().unwrap(), &h[..2], &h[..2], &h[2..4], h),
         }
     }
