@@ -112,6 +112,9 @@ pub fn get_slot_info(id: i64, db_path: &Path) -> SlotInfo {
                     let bytes = bytes.try_into().unwrap();
                     ResrcDescriptor::Guid(u32::from_be_bytes(bytes))
                 },
+                0 => {
+                    ResrcDescriptor::Guid(0)
+                }
                 _ => panic!("invalid icon in db"),
             }
         },
